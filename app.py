@@ -4,14 +4,22 @@ import cv2
 from PIL import Image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.efficientnet import preprocess_input
+import gdown
+import os
 
 st.set_page_config(page_title="Brain Tumor Detection", layout="centered")
 
-# ✅ Load model ONLY ONCE (BIG SPEED BOOST)
-
+# 🔽 Load model from Google Drive
 @st.cache_resource
 def load_my_model():
-    return load_model("brain_tumor_final.keras")
+    file_id = "1nwjaUkV_w6S1UWMz0VbEr_GxgRFEAEZL"
+    url = f"https://drive.google.com/uc?id={file_id}"
+    output = "brain_tumor_final.keras"
+
+    if not os.path.exists(output):
+        gdown.download(url, output, quiet=False)
+
+    return load_model(output)
 
 model = load_my_model()
 
@@ -27,14 +35,15 @@ if uploaded_file is not None:
 
         # Read image
         image = Image.open(uploaded_file).convert("RGB")
-        img = np.array(image)
-
         st.image(image, caption="Uploaded Image", use_container_width=True)
 
-        # Resize
+        # Convert to array
+        img = np.array(image)
+
+        # Resize using OpenCV
         img = cv2.resize(img, (300, 300))
 
-        # Validate image (avoid random images like GPay)
+        # Validate image
         gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         std_dev = np.std(gray)
 
@@ -59,14 +68,7 @@ if uploaded_file is not None:
                 st.success(f"Prediction: {predicted_class}")
                 st.info(f"Confidence: {confidence*100:.2f}%")
 
-            # Probabilities
+            # Show probabilities
             st.subheader("Class Probabilities")
             for i in range(len(classes)):
                 st.write(f"{classes[i]}: {pred[0][i]*100:.2f}%")
-import gdown
-@st.cache_resource
-def load_model_from_drive():
-    url = "https://drive.google.com/uc?id=YOUR_FILE_ID"
-    output = "brain_tumor_final.keras"
-    gdown.download(url, output, quiet=False)
-    return load_model(output)
