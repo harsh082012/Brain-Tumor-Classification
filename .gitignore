@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+env/
+
+# Mac
+.DS_Store
+
+# Model file
+brain_tumor_final.keras
