@@ -1,24 +1,17 @@
 import streamlit as st
 import numpy as np
+import cv2
 from PIL import Image
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.efficientnet import preprocess_input
-import gdown
-import os
 
 st.set_page_config(page_title="Brain Tumor Detection", layout="centered")
 
-# 🔽 Download model from Google Drive (only once)
+# ✅ Load model ONLY ONCE (BIG SPEED BOOST)
+
 @st.cache_resource
 def load_my_model():
-    file_id = "1nwjaUkV_w6S1UWMz0VbEr_GxgRFEAEZL"
-    url = f"https://drive.google.com/uc?id={file_id}"
-    output = "brain_tumor_final.keras"
-
-    if not os.path.exists(output):
-        gdown.download(url, output, quiet=False)
-
-    return load_model(output)
+    return load_model("brain_tumor_final.keras")
 
 model = load_my_model()
 
@@ -34,14 +27,15 @@ if uploaded_file is not None:
 
         # Read image
         image = Image.open(uploaded_file).convert("RGB")
-        st.image(image, caption="Uploaded Image", use_container_width=True)
-
-        # ✅ Resize FIRST
-        image = image.resize((300, 300))
         img = np.array(image)
 
-        # ✅ Validate image (no cv2 needed)
-        gray = np.mean(img, axis=2)
+        st.image(image, caption="Uploaded Image", use_container_width=True)
+
+        # Resize
+        img = cv2.resize(img, (300, 300))
+
+        # Validate image (avoid random images like GPay)
+        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         std_dev = np.std(gray)
 
         if std_dev < 10:
@@ -69,3 +63,10 @@ if uploaded_file is not None:
             st.subheader("Class Probabilities")
             for i in range(len(classes)):
                 st.write(f"{classes[i]}: {pred[0][i]*100:.2f}%")
+import gdown
+@st.cache_resource
+def load_model_from_drive():
+    url = "https://drive.google.com/uc?id=YOUR_FILE_ID"
+    output = "brain_tumor_final.keras"
+    gdown.download(url, output, quiet=False)
+    return load_model(output)
