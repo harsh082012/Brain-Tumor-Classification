@@ -10,7 +10,7 @@ The model can classify images into **4 categories**:
 * Pituitary Tumor
 * No Tumor
 
-The system is built using **Transfer Learning (EfficientNetB3)** and deployed using **Streamlit**.
+The system is built using **Transfer Learning (EfficientNetB3)** and using **Streamlit**.
 
 ---
 
@@ -130,20 +130,6 @@ The system is built using **Transfer Learning (EfficientNetB3)** and deployed us
 
 ---
 
-## 🖥️ Deployment
-
-* Framework: **Streamlit**
-* Model hosted on **Google Drive**
-* Auto-download using `gdown`
-
----
-
-## 🌐 Demo
-
-👉 *(Add your Streamlit link here after deployment)*
-
----
-
 ## 📦 Installation
 
 ```bash
@@ -159,6 +145,7 @@ streamlit run app.py
 
 ⚠️ Model file is not included in the repository due to size limitations.
 It will be **automatically downloaded from Google Drive** when the app runs.
+Link ->https://drive.google.com/file/d/1nwjaUkV_w6S1UWMz0VbEr_GxgRFEAEZL/view?usp=share_link
 
 ---
 
